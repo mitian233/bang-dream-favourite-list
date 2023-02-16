@@ -74,7 +74,7 @@ const handleClose = (done: () => void) => {
 import html2canvas from "html2canvas";
 import axios from "axios";
 import songsListRaw from '../assets/all.5.js'
-const BASE_URL = 'http://imagecdn.bangdream.moe/'
+const BASE_URL = 'https://api-mfl.bangdream.moe/'
 export default {
   name: "songsListView",
   data() {

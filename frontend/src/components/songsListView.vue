@@ -168,27 +168,27 @@ export default {
   },
   mounted() {
     const _this = this
-    songsListRaw["146"]
-    /*
-    for (let i = 0; i < 472; i++) {
-      if (songsListRaw[i] == undefined) {
-        continue
-      } else {
-        this.songsList.push(songsListRaw[i].musicTitle[0])
-      }
-    }
-    */
     axios.get(BASE_URL + 'songs').then(res => {
       for (let i = 0; i < 472; i++) {
-        const raw = res.data[i]
-        if (raw == undefined) {
-          continue
-        } else {
-          const json = {
-            musicTitle: raw.musicTitle[0],
-            musicId: i
+        if (res.status == 200){
+          const raw = res.data[i]
+          if (raw == undefined) {
+            continue
+          } else {
+            const json = {
+              musicTitle: raw.musicTitle[0],
+              musicId: i
+            }
+            _this.songsList.push(json)
           }
-          _this.songsList.push(json)
+        } else {
+          for (let i = 0; i < 472; i++) {
+            if (songsListRaw[i] == undefined) {
+              continue
+            } else {
+              this.songsList.push(songsListRaw[i].musicTitle[0])
+            }
+          }
         }
       }
     })

@@ -26,7 +26,8 @@ const handleClose = (done: () => void) => {
             </div>
           </div>
         </div>
-        <p class="absolute bottom-1.5 left-2">{{ item.title }}</p>
+        <p class="absolute bg-white bottom-1.5 left-2" style="border-radius: 5px">{{ item.title }}</p>
+        <p class="absolute bg-white top-1 right-1" style="text-align: right;font-size: 12px;border-radius: 5px">{{item.musicTitle}}</p>
       </div>
     </div>
     <div>
@@ -41,7 +42,7 @@ const handleClose = (done: () => void) => {
     <br/>
     <span>　选择乐曲：</span>
     <el-select v-model="selectValue" class="m-2" placeholder="Select" size="large" :on-change="edit(selectBoxIndex,selectValue)" filterable>
-      <el-option v-for="item in songsList" :key="item" :label="item" :value="songsList.indexOf(item)"/>
+      <el-option v-for="item in songsList" :key="item" :label="item['musicTitle']" :value="songsList.indexOf(item)"/>
     </el-select>
     <template #footer>
       <span class="dialog-footer">
@@ -73,6 +74,7 @@ const handleClose = (done: () => void) => {
 import html2canvas from "html2canvas";
 import axios from "axios";
 import songsListRaw from '../assets/all.5.js'
+const BASE_URL = 'http://127.0.0.1:5000/'
 export default {
   name: "songsListView",
   data() {
@@ -127,10 +129,14 @@ export default {
     },
     deleteItem(target) {
       this.listItem[target].musicTitle = ''
+      this.listItem[target].imgExist = false
+      this.listItem[target].img = ''
     },
     deleteAll() {
       for (let i = 0; i < this.listItem.length; i++) {
         this.listItem[i].musicTitle = ''
+        this.listItem[i].imgExist = false
+        this.listItem[i].img = ''
       }
     },
     deleteRecord() {
@@ -140,10 +146,18 @@ export default {
       }
     },
     edit(target,value) {
-      console.log(this.listItem[target].title,'是',this.songsList[value])
-      this.listItem[target].musicTitle = this.songsList[value]
-      //this.listItem[target].imgExist = true
-      //this.listItem[target].img = 'https://bestdori.com/assets/jp/songs/icons/' + (value + 1) + '.png'
+      console.log(this.listItem[target].title,'是',this.songsList[value].musicTitle,this.songsList[value].musicId)
+      this.listItem[target].musicTitle = this.songsList[value].musicTitle
+      axios.get(BASE_URL + 'jacket/' + this.songsList[value].musicId).then(res => {
+        if (res.status == 200) {
+          this.listItem[target].imgExist = true
+          this.listItem[target].img = BASE_URL + 'jacket/' + this.songsList[value].musicId
+        } else {
+          this.listItem[target].imgExist = false
+          this.listItem[target].img = ''
+        }
+      })
+
       //this.listItem[target].img = 'https://bestdori.com/assets/jp/musicjacket/musicjacket480_rip/assets-star-forassetbundle-startapp-musicjacket-musicjacket480-472_japari_park-jacket.png'
     }
     ,
@@ -155,6 +169,7 @@ export default {
   mounted() {
     const _this = this
     songsListRaw["146"]
+    /*
     for (let i = 0; i < 472; i++) {
       if (songsListRaw[i] == undefined) {
         continue
@@ -162,17 +177,21 @@ export default {
         this.songsList.push(songsListRaw[i].musicTitle[0])
       }
     }
-    /*
-    axios.get('https://bestdori.com/api/songs/all.5.json').then(res => {
+    */
+    axios.get(BASE_URL + 'songs').then(res => {
       for (let i = 0; i < 472; i++) {
         const raw = res.data[i]
         if (raw == undefined) {
           continue
         } else {
-          _this.songsList.push(raw.musicTitle[0])
+          const json = {
+            musicTitle: raw.musicTitle[0],
+            musicId: i
+          }
+          _this.songsList.push(json)
         }
       }
-    })*/
+    })
   }
 }
 </script>

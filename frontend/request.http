@@ -3,3 +3,7 @@ GET https://bestdori.com/api/songs/all.5.json
 ###
 
 GET https://bestdori.com/api/songs/all.7.json
+
+###
+
+GET http://127.0.0.1:5000/songs

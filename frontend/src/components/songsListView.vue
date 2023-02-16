@@ -74,7 +74,7 @@ const handleClose = (done: () => void) => {
 import html2canvas from "html2canvas";
 import axios from "axios";
 import songsListRaw from '../assets/all.5.js'
-const BASE_URL = 'https://api-mfl.bangdream.moe/'
+const BASE_URL = 'http://imagecdn.bangdream.moe/'
 export default {
   name: "songsListView",
   data() {
@@ -148,10 +148,10 @@ export default {
     edit(target,value) {
       console.log(this.listItem[target].title,'是',this.songsList[value].musicTitle,this.songsList[value].musicId)
       this.listItem[target].musicTitle = this.songsList[value].musicTitle
-      axios.get(BASE_URL + 'jacket/' + this.songsList[value].musicId).then(res => {
+      axios.get(BASE_URL + 'jacket/' + this.songsList[value].musicJacket+'-jacket.png').then(res => {
         if (res.status == 200) {
           this.listItem[target].imgExist = true
-          this.listItem[target].img = BASE_URL + 'jacket/' + this.songsList[value].musicId
+          this.listItem[target].img = BASE_URL + 'jacket/' + this.songsList[value].musicJacket+'-jacket.png'
         } else {
           this.listItem[target].imgExist = false
           this.listItem[target].img = ''
@@ -167,31 +167,18 @@ export default {
     }
   },
   mounted() {
-    const _this = this
-    axios.get(BASE_URL + 'songs').then(res => {
-      for (let i = 0; i < 472; i++) {
-        if (res.status == 200){
-          const raw = res.data[i]
-          if (raw == undefined) {
-            continue
-          } else {
-            const json = {
-              musicTitle: raw.musicTitle[0],
-              musicId: i
-            }
-            _this.songsList.push(json)
-          }
-        } else {
-          for (let i = 0; i < 472; i++) {
-            if (songsListRaw[i] == undefined) {
-              continue
-            } else {
-              this.songsList.push(songsListRaw[i].musicTitle[0])
-            }
-          }
+    for (let i = 0; i < 473; i++) {
+      if (songsListRaw[i] == undefined) {
+        continue
+      } else {
+        const json = {
+          musicTitle: songsListRaw[i].musicTitle[0],
+          musicId: i,
+          musicJacket: songsListRaw[i].jacketImage[0]
         }
+        this.songsList.push(json)
       }
-    })
+    }
   }
 }
 </script>

@@ -44,7 +44,7 @@ def getSongJacket(songId):
             with open(cache_path, 'wb') as f:
                 f.write(r.content)
                 f.close()
-        return send_file(cache_path, mimetype="image", as_attachment=False, attachment_filename=jacket_name)
+        return send_file(cache_path, mimetype="image", as_attachment=False)
     else:
         return abort(404)
 

@@ -23,11 +23,11 @@ const handleClose = (done: () => void) => {
             </div>
             <div v-else>
               <img :src="item.img" :alt="item.musicTitle" crossorigin="anonymous">
+              <p class="absolute bg-white top-1 right-1" style="text-align: right;font-size: 12px;border-radius: 5px">{{item.musicTitle}}</p>
             </div>
           </div>
         </div>
         <p class="absolute bg-white bottom-1.5 left-2" style="border-radius: 5px">{{ item.title }}</p>
-        <p class="absolute bg-white top-1 right-1" style="text-align: right;font-size: 12px;border-radius: 5px">{{item.musicTitle}}</p>
       </div>
     </div>
     <div>
@@ -41,7 +41,7 @@ const handleClose = (done: () => void) => {
     </el-select>
     <br/>
     <span>　选择乐曲：</span>
-    <el-select v-model="selectValue" class="m-2" placeholder="Select" size="large" :on-change="edit(selectBoxIndex,selectValue)" filterable>
+    <el-select v-model="selectValue" class="m-2" placeholder="Select" size="large" filterable>
       <el-option v-for="item in songsList" :key="item" :label="item['musicTitle']" :value="songsList.indexOf(item)"/>
     </el-select>
     <template #footer>
@@ -74,7 +74,7 @@ const handleClose = (done: () => void) => {
 import html2canvas from "html2canvas";
 import axios from "axios";
 import songsListRaw from '../assets/all.5.js'
-const BASE_URL = 'http://127.0.0.1:5000/'
+const BASE_URL = 'https://api-mfl.bangdream.moe/'
 export default {
   name: "songsListView",
   data() {
@@ -163,7 +163,7 @@ export default {
     ,
     editAndSave(target,value) {
       this.edit(target,value)
-      this.pickUpVisible = false
+      //this.pickUpVisible = false
     }
   },
   mounted() {

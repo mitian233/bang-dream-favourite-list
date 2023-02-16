@@ -6,6 +6,7 @@ import SongsListView from "./components/songsListView.vue";
   <songs-list-view/>
   <div style="margin: 10px 0 0 0;padding: 0;">
     <p>Made with ❤ by Mikan | <a href="https://github.com/mitian233/bang-dream-favourite-list">GitHub</a> | <a href="https://pd.qq.com/s/5smpnsao5">来频道坐坐</a></p>
+    <p>建议使用 PC 访问以正常生成图像</p>
   </div>
 </template>
 

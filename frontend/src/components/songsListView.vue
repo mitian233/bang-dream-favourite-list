@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { ElMessageBox } from 'element-plus'
-const dialogVisible = ref(false)
 const handleClose = (done: () => void) => {
   ElMessageBox.confirm('确定要关闭吗？')
       .then(() => {
@@ -15,7 +14,7 @@ const handleClose = (done: () => void) => {
 <template>
   <div id="gird">
     <h1 style="margin-bottom: 30px">邦邦生涯个人喜好表</h1>
-    <div class="grid grid-cols-6 gap-4 w-fit">
+    <div class="grid grid-cols-6 gap-4 w-fit" style="padding: 0 20px 10px 20px">
       <div v-for="item in listItem" class="border-4 border-black rounded-xl bg-white h-40 w-40 relative">
         <div class="bg-white h-37 w-37">
           <div style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center">
@@ -23,38 +22,41 @@ const handleClose = (done: () => void) => {
               <p>{{item.musicTitle}}</p>
             </div>
             <div v-else>
-              <img :src="item.img" alt="">
+              <img :src="item.img" :alt="item.musicTitle" crossorigin="anonymous">
             </div>
           </div>
         </div>
         <p class="absolute bottom-1.5 left-2">{{ item.title }}</p>
       </div>
     </div>
+    <div>
+      <p style="font-size: 13px;color: gray;padding-bottom: 10px">Created with https://myfavouritelist.bangdream.moe</p>
+    </div>
   </div>
   <el-dialog v-model="pickUpVisible" title="选择歌曲" width="30%" :before-close="handleClose" draggable>
     <span>选择单元格：</span>
-    <el-select v-model="selectBoxIndex" class="m-2" placeholder="Select" size="large">
+    <el-select v-model="selectBoxIndex" class="m-2" placeholder="Select" size="large" filterable>
       <el-option v-for="item in listItem" :key="item.title" :label="item.title" :value="listItem.indexOf(item)"/>
     </el-select>
     <br/>
     <span>　选择乐曲：</span>
-    <el-select v-model="selectValue" class="m-2" placeholder="Select" size="large">
+    <el-select v-model="selectValue" class="m-2" placeholder="Select" size="large" :on-change="edit(selectBoxIndex,selectValue)" filterable>
       <el-option v-for="item in songsList" :key="item" :label="item" :value="songsList.indexOf(item)"/>
     </el-select>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="pickUpVisible = false">取消</el-button>
-        <el-button type="danger" @click="deleteAll">清除所有</el-button>
         <el-button type="danger" @click="deleteItem(selectBoxIndex)">清除选中</el-button>
-        <el-button type="primary" @click="editedAndSave(selectBoxIndex,selectValue)">
+        <el-button type="primary" @click="editAndSave(selectBoxIndex,selectValue)">
           保存
         </el-button>
       </span>
     </template>
   </el-dialog>
-  <div style="margin-top: 10px">
+  <div>
     <el-button @click="saveImg">保存成图片</el-button>
     <el-button @click="editWindow">编辑</el-button>
+    <el-button type="danger" @click="deleteAll">清除所有</el-button>
   </div>
   <el-dialog v-model="saveImgDialogVisible" title="生成记录" width="70%">
     <div id="saveimagecanvas"></div>
@@ -98,6 +100,7 @@ export default {
       songsList: [],
       selectBoxIndex: 0,
       selectValue: 0,
+      dialogVisible: false,
       saveImgDialogVisible: false,
       pickUpVisible: false,
     }
@@ -111,7 +114,13 @@ export default {
       console.log('saveImg')
       html2canvas(document.querySelector("#gird")).then(canvas => {
         document.querySelector('#saveimagecanvas').appendChild(canvas).style.width = '100%'
-      })
+      }),{
+        backgroundColor: "#ffffff",
+        allowTaint: true,
+        useCORS: true,
+        scrollY: 0,
+        scrollX: 0,
+      }
     },
     editWindow() {
       this.pickUpVisible = true
@@ -130,9 +139,17 @@ export default {
         canvasDiv.removeChild(canvasDiv.firstChild);
       }
     },
-    editedAndSave(target,value) {
+    edit(target,value) {
       console.log(this.listItem[target].title,'是',this.songsList[value])
       this.listItem[target].musicTitle = this.songsList[value]
+      //this.listItem[target].imgExist = true
+      //this.listItem[target].img = 'https://bestdori.com/assets/jp/songs/icons/' + (value + 1) + '.png'
+      //this.listItem[target].img = 'https://bestdori.com/assets/jp/musicjacket/musicjacket480_rip/assets-star-forassetbundle-startapp-musicjacket-musicjacket480-472_japari_park-jacket.png'
+    }
+    ,
+    editAndSave(target,value) {
+      this.edit(target,value)
+      this.pickUpVisible = false
     }
   },
   mounted() {
@@ -159,6 +176,5 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 </style>

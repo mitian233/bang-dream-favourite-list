@@ -12,7 +12,7 @@ const handleClose = (done: () => void) => {
 }
 </script>
 <template>
-  <div id="gird">
+  <div id="gird" style="text-align: center;">
     <h1 style="margin-bottom: 30px">邦邦生涯个人喜好表</h1>
     <div class="grid grid-cols-6 gap-4 w-fit" style="padding: 0 20px 10px 20px">
       <div v-for="item in listItem" class="border-4 border-black rounded-xl bg-white h-40 w-40 relative">
@@ -34,7 +34,7 @@ const handleClose = (done: () => void) => {
       <p style="font-size: 13px;color: gray;padding-bottom: 10px">Created with https://myfavouritelist.bangdream.moe</p>
     </div>
   </div>
-  <el-dialog v-model="pickUpVisible" title="选择歌曲" width="30%" :before-close="handleClose" draggable>
+  <el-dialog v-model="pickUpVisible" title="选择歌曲" width="450px" :before-close="handleClose" draggable>
     <span>选择单元格：</span>
     <el-select v-model="selectBoxIndex" class="m-2" placeholder="Select" size="large" filterable>
       <el-option v-for="item in listItem" :key="item.title" :label="item.title" :value="listItem.indexOf(item)"/>
@@ -54,21 +54,26 @@ const handleClose = (done: () => void) => {
       </span>
     </template>
   </el-dialog>
-  <div>
+  <div style="text-align: center;">
     <el-button @click="saveImg">生成图片</el-button>
     <el-button @click="editWindow">编辑</el-button>
     <el-button type="danger" @click="deleteAll">清除所有</el-button>
   </div>
-  <el-dialog v-model="saveImgDialogVisible" title="图片生成记录" width="70%" v-loading="imgDialogLoading">
-    <p>长按以保存</p>
-    <div id="saveimagecanvas"></div>
-    <template #footer>
+  <div>
+    <el-dialog v-model="saveImgDialogVisible" title="图片生成记录" width="70%" v-loading="imgDialogLoading">
+      <p>可向下滚动，右键以保存</p>
+      <div id="canvascontainer" style="position: relative;">
+        <div id="saveimagecanvas">
+        </div>
+      </div>
+      <template #footer>
       <span class="dialog-footer">
         <el-button type="danger" @click="deleteRecord">删除生成记录</el-button>
         <el-button type="primary" @click="saveImgDialogVisible = false">关闭</el-button>
       </span>
-    </template>
-  </el-dialog>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script lang="ts">
@@ -125,6 +130,13 @@ export default {
         scrollX: 0,
       }).then(canvas => {
         document.querySelector('#saveimagecanvas').appendChild(canvas).style.width = '100%'
+        let imgUrl = canvas.toDataURL()
+        const link = document.createElement('a')
+        link.download = new Date().getTime() + '.png'
+        link.href = imgUrl
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
       })
       this.imgDialogLoading = false
     },
@@ -161,8 +173,6 @@ export default {
           this.listItem[target].img = ''
         }
       })
-
-      //this.listItem[target].img = 'https://bestdori.com/assets/jp/musicjacket/musicjacket480_rip/assets-star-forassetbundle-startapp-musicjacket-musicjacket480-472_japari_park-jacket.png'
     }
     ,
     editAndSave(target,value) {

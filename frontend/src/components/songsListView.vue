@@ -119,17 +119,18 @@ export default {
       console.log('addImg', item, girdIndex)
     },
     saveImg() {
+      document.body.style.width = '1080px'
       this.imgDialogLoading = true
       this.saveImgDialogVisible = true
       console.log('saveImg')
-      html2canvas(document.querySelector("#gird"),{
+      html2canvas(document.getElementById('gird'),{
         backgroundColor: "#ffffff",
         allowTaint: true,
         useCORS: true,
         scrollY: 0,
         scrollX: 0,
       }).then(canvas => {
-        document.querySelector('#saveimagecanvas').appendChild(canvas).style.width = '100%'
+        document.getElementById('saveimagecanvas').appendChild(canvas).style.width = '100%'
         let imgUrl = canvas.toDataURL()
         const link = document.createElement('a')
         link.download = new Date().getTime() + '.png'
@@ -138,6 +139,7 @@ export default {
         link.click()
         document.body.removeChild(link)
       })
+      document.body.style.width = '100%'
       this.imgDialogLoading = false
     },
     editWindow() {

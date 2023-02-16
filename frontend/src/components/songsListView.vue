@@ -55,11 +55,12 @@ const handleClose = (done: () => void) => {
     </template>
   </el-dialog>
   <div>
-    <el-button @click="saveImg">保存成图片</el-button>
+    <el-button @click="saveImg">生成图片</el-button>
     <el-button @click="editWindow">编辑</el-button>
     <el-button type="danger" @click="deleteAll">清除所有</el-button>
   </div>
-  <el-dialog v-model="saveImgDialogVisible" title="生成记录" width="70%">
+  <el-dialog v-model="saveImgDialogVisible" title="图片生成记录" width="70%" v-loading="imgDialogLoading">
+    <p>长按以保存</p>
     <div id="saveimagecanvas"></div>
     <template #footer>
       <span class="dialog-footer">
@@ -105,6 +106,7 @@ export default {
       dialogVisible: false,
       saveImgDialogVisible: false,
       pickUpVisible: false,
+      imgDialogLoading: false,
     }
   },
   methods: {
@@ -112,6 +114,7 @@ export default {
       console.log('addImg', item, girdIndex)
     },
     saveImg() {
+      this.imgDialogLoading = true
       this.saveImgDialogVisible = true
       console.log('saveImg')
       html2canvas(document.querySelector("#gird"),{
@@ -123,6 +126,7 @@ export default {
       }).then(canvas => {
         document.querySelector('#saveimagecanvas').appendChild(canvas).style.width = '100%'
       })
+      this.imgDialogLoading = false
     },
     editWindow() {
       this.pickUpVisible = true

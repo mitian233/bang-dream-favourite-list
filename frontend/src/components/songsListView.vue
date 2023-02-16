@@ -114,15 +114,15 @@ export default {
     saveImg() {
       this.saveImgDialogVisible = true
       console.log('saveImg')
-      html2canvas(document.querySelector("#gird")).then(canvas => {
-        document.querySelector('#saveimagecanvas').appendChild(canvas).style.width = '100%'
-      }),{
+      html2canvas(document.querySelector("#gird"),{
         backgroundColor: "#ffffff",
         allowTaint: true,
         useCORS: true,
         scrollY: 0,
         scrollX: 0,
-      }
+      }).then(canvas => {
+        document.querySelector('#saveimagecanvas').appendChild(canvas).style.width = '100%'
+      })
     },
     editWindow() {
       this.pickUpVisible = true
